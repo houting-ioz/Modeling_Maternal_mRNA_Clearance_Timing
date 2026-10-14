@@ -128,7 +128,7 @@ def build_feature_blocks(row):
     blocks['polyA'] = ([np.log1p(row['polyA_MII_median']), np.log1p(row['polyA_GV_median']), np.log1p(row['polyA_MI_median'])],
                        ['polyA_MII_median', 'polyA_GV_median', 'polyA_MI_median'])
     # 单个的poly A
-    blocks['polyA_MII'] = ([np.log1p(row['polyA_MII_median'])], ['polyA_MI_median'])
+    blocks['polyA_MII'] = ([np.log1p(row['polyA_MII_median'])], ['polyA_MII_median'])
     blocks['polyA_GV'] = ([np.log1p(row['polyA_GV_median'])], ['polyA_GV_median'])
     blocks['polyA_MI'] = ([np.log1p(row['polyA_MI_median'])], ['polyA_MI_median'])
 
@@ -330,62 +330,6 @@ def assemble_feature_matrix(df, feat_df, block_to_cols, combo):
 #   kmer: None 表示不加k-mer特征；否则传 dict 指定固定完整词表使用的 k_list
 # 一次运行会把下面所有组合依次跑完。 在这修改
 FEATURE_COMBOS = {
-    'base_only': {
-        'scalar_blocks': ['base'],
-        'kmer': None,
-    },
-    'only_full_kmer123': {
-        'scalar_blocks': None,
-        'kmer': {'k_list': (1, 2, 3)},
-        'str_type': 'seq'  # seq
-    },
-    'base_f1': {
-        'scalar_blocks': ['base', 'f1'],
-        'kmer': None,
-    },
-    'base_polyA_f1': {
-        'scalar_blocks': ['base', 'polyA', 'f1'],
-        'kmer': None,
-    },
-
-    # 'base_structure': {
-    #     'scalar_blocks': ['base', 'structure'],  # 二级结构先不放在这
-    #     'kmer': None,
-    # },
-    'base_polyA_f1_codon': {
-        'scalar_blocks': ['base', 'polyA', 'f1', 'codon'],
-        'kmer': None,
-    },
-    'base_m6a_micro_transposon': {
-        'scalar_blocks': ['base', 'm6a', 'micro', 'transposon'],  # 转座子元件
-        'kmer': None,
-    },
-    'all_scalar': {
-        'scalar_blocks': ['base', 'polyA', 'f1', 'm6a', 'transposon', 'micro', 'codon'],
-        'kmer': None,
-    },
-    # 下面都其他的特征，不用放在正文里 不对，这里改不了没法指定序列
-    'only_3utr_kmer123': {
-        'scalar_blocks': None,
-        'kmer': {'k_list': (1, 2, 3)},
-        'str_type': '3utr'
-    },
-    'only_cds_kmer123': {
-        'scalar_blocks': None,
-        'kmer': {'k_list': (1, 2, 3)},
-        'str_type': 'cds'
-    },
-    'base_full_kmer123': {
-        'scalar_blocks': ['base'],
-        'kmer': {'k_list': (1, 2, 3)},
-        'str_type': 'seq'
-    },
-    'base_full_kmer1_7': {
-        'scalar_blocks': ['base'],
-        'kmer': {'k_list': (1, 2, 3, 4, 5, 6, 7)},
-        'str_type': 'seq'
-    },
-    # 需要把polyA的三个数值给拆开
     'base_polyA_MII': {
         'scalar_blocks': ['base', 'polyA_MII'],
         'kmer': None,
@@ -394,11 +338,72 @@ FEATURE_COMBOS = {
         'scalar_blocks': ['base', 'polyA_MI'],
         'kmer': None,
     },
-    'base_polyA_GV': {
-        'scalar_blocks': ['base', 'polyA_GV'],
-        'kmer': None,
-    },
 
+    # 'base_only': {
+    #     'scalar_blocks': ['base'],
+    #     'kmer': None,
+    # },
+    # 'only_full_kmer123': {
+    #     'scalar_blocks': None,
+    #     'kmer': {'k_list': (1, 2, 3)},
+    #     'str_type': 'seq'  # seq
+    # },
+    # 'base_f1': {
+    #     'scalar_blocks': ['base', 'f1'],
+    #     'kmer': None,
+    # },
+    # 'base_polyA_f1': {
+    #     'scalar_blocks': ['base', 'polyA', 'f1'],
+    #     'kmer': None,
+    # },
+
+    # 'base_polyA_f1_codon': {
+    #     'scalar_blocks': ['base', 'polyA', 'f1', 'codon'],
+    #     'kmer': None,
+    # },
+    # 'base_m6a_micro_transposon': {
+    #     'scalar_blocks': ['base', 'm6a', 'micro', 'transposon'],  # 转座子元件
+    #     'kmer': None,
+    # },
+    # 'all_scalar': {
+    #     'scalar_blocks': ['base', 'polyA', 'f1', 'm6a', 'transposon', 'micro', 'codon'],
+    #     'kmer': None,
+    # },
+    # 下面都其他的特征，不用放在正文里 不对，这里改不了没法指定序列
+    # 'only_3utr_kmer123': {
+    #     'scalar_blocks': None,
+    #     'kmer': {'k_list': (1, 2, 3)},
+    #     'str_type': '3utr'
+    # },
+    # 'only_cds_kmer123': {
+    #     'scalar_blocks': None,
+    #     'kmer': {'k_list': (1, 2, 3)},
+    #     'str_type': 'cds'
+    # },
+    # 'base_full_kmer123': {
+    #     'scalar_blocks': ['base'],
+    #     'kmer': {'k_list': (1, 2, 3)},
+    #     'str_type': 'seq'
+    # },
+    # 'base_full_kmer1_7': {
+    #     'scalar_blocks': ['base'],
+    #     'kmer': {'k_list': (1, 2, 3, 4, 5, 6, 7)},
+    #     'str_type': 'seq'
+    # },
+    # 需要把polyA的三个数值给拆开
+    # 'base_polyA_MII': {
+    #     'scalar_blocks': ['base', 'polyA_MII'],
+    #     'kmer': None,
+    # },
+    # 'base_polyA_MI': {
+    #     'scalar_blocks': ['base', 'polyA_MI'],
+    #     'kmer': None,
+    # },
+    # 'base_polyA_GV': {
+    #     'scalar_blocks': ['base', 'polyA_GV'],
+    #     'kmer': None,
+    # },
+    #
     'base_polyA_MII_F1': {
         'scalar_blocks': ['base', 'polyA_MII', 'f1'],
         'kmer': None,
@@ -407,23 +412,23 @@ FEATURE_COMBOS = {
         'scalar_blocks': ['base', 'polyA_MI', 'f1'],
         'kmer': None,
     },
-    'base_polyA_GV_F1': {
-        'scalar_blocks': ['base', 'polyA_GV', 'f1'],
-        'kmer': None,
-    },
-    # 一些其他的
-    'base_polyA_f1_micro': {
-        'scalar_blocks': ['base', 'polyA', 'f1', 'micro'],
-        'kmer': None,
-    },
-    'base_polyA_f1_m6a': {
-        'scalar_blocks': ['base', 'polyA', 'f1','m6a'],
-        'kmer': None,
-    },
-    'base_polyA_f1_transposon': {
-        'scalar_blocks': ['base', 'polyA', 'f1', 'transposon'],
-        'kmer': None,
-    },
+    # 'base_polyA_GV_F1': {
+    #     'scalar_blocks': ['base', 'polyA_GV', 'f1'],
+    #     'kmer': None,
+    # },
+    # # 一些其他的
+    # 'base_polyA_f1_micro': {
+    #     'scalar_blocks': ['base', 'polyA', 'f1', 'micro'],
+    #     'kmer': None,
+    # },
+    # 'base_polyA_f1_m6a': {
+    #     'scalar_blocks': ['base', 'polyA', 'f1','m6a'],
+    #     'kmer': None,
+    # },
+    # 'base_polyA_f1_transposon': {
+    #     'scalar_blocks': ['base', 'polyA', 'f1', 'transposon'],
+    #     'kmer': None,
+    # },
 }
 
 
