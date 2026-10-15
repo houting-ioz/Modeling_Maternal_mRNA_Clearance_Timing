@@ -1,0 +1,13 @@
+enformer_pytorch==0.8.12
+h5py==3.16.0
+matplotlib==3.8.4
+numpy==2.5.4
+optuna==5.0.0
+pandas==3.0.6
+scikit_learn==1.9.1
+scipy==1.18.1
+seaborn==0.13.2
+torch==2.8.0+cu128
+torchvision==0.23.0+cu128
+tqdm==4.67.3
+xgboost==3.4.1
